@@ -65,6 +65,7 @@ function router({ onlineUsers, selectedGroup, groupsList, onGroupConnect }) {
             <GroupsPage
               groupsList={groupsList}
               onGroupConnect={onGroupConnect}
+              selectedGroup={selectedGroup}
             />
           ),
         },

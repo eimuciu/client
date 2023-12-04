@@ -61,7 +61,7 @@ function ChatPage({ onlineUsers, selectedGroup }) {
         </div>
       </div>
       <div className="w-2/12">
-        <div className="p-2">Users</div>
+        <div className="p-2">Online</div>
         <div className="h-[80vh] bg-[brown]">
           <div className="p-2 h-full overflow-y-scroll">
             {onlineUsers.map((user) => (
