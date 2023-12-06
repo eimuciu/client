@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './style.css';
 // Libraries
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
@@ -7,7 +7,11 @@ import Cookies from 'js-cookie';
 import NavBar from './components/NavBar';
 import ChatPage from './components/Pages/ChatPage';
 import GroupsPage from './components/Pages/GroupsPage';
+// Hub
+import { hubConn } from './hub/hubConfig';
 
+// >>>>>>>>>>
+// Cookies section
 const cookieName = 'kjsdnfkjsdnfkjskafldmnaflkasmdfkls';
 
 function getCookie() {
@@ -17,29 +21,64 @@ function getCookie() {
   return '';
 }
 
+function registrationConn(setUserFn) {
+  hubConn.connection.on('UserRegistration', (message) => {
+    console.log(message);
+    if (!message.connected) {
+      alert(message.message);
+      return;
+    }
+    console.log('Successfull login');
+    setUserFn(message.user);
+  });
+}
+
 function App() {
   // const [user, setUser] = useState(getCookie());
-  const [user, setUser] = useState('hellas');
+  const [user, setUser] = useState('');
   const [onlineUsers, setOnlineUsers] = useState(['peter', 'john', 'lamba']);
   const [selectedGroup, setSelectedGroup] = useState('');
   const [groupsList, setGroupsList] = useState([
     'Music',
     'Movies',
     'Programming',
-    'Hiking',
+    'Travel',
   ]);
 
   const onGroupConnect = (groupName) => {
     setSelectedGroup(() => groupName);
   };
 
+  const logUser = (userData) => {
+    setUser(userData);
+  };
+
   if (!user) {
-    const username = prompt('Your username');
-    if (username) {
-      Cookies.set(cookieName, username);
-      setUser(username);
-    }
+    return (
+      <div>
+        hello there
+        <button
+          className="bg-[red]"
+          onClick={async () => {
+            hubConn.createConnection('Peter');
+            await hubConn.connect();
+            hubConn.connection.invoke('RegisterUser', 'Peter');
+            registrationConn(logUser);
+          }}
+        >
+          Register
+        </button>
+        <input type="text" />
+      </div>
+    );
   }
+
+  // if (username) {
+  // console.log(username);
+  // Cookies.set(cookieName, username);
+  // setUser(username);
+  // }
+
   if (user)
     return (
       <RouterProvider
@@ -77,7 +116,11 @@ function router({ onlineUsers, selectedGroup, groupsList, onGroupConnect }) {
         },
         {
           path: '/create',
-          element: <div>Create</div>,
+          element: (
+            <div className="flex justify-center h-[80vh] items-center">
+              Under construction
+            </div>
+          ),
         },
         {
           path: '*',
