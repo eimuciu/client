@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react';
+// Styles
 import './style.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 // Libraries
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Cookies from 'js-cookie';
@@ -7,8 +10,11 @@ import Cookies from 'js-cookie';
 import NavBar from './components/NavBar';
 import ChatPage from './components/Pages/ChatPage';
 import GroupsPage from './components/Pages/GroupsPage';
+import Modal from './components/Modal/Modal';
 // Hub
 import { hubConn } from './hub/hubConfig';
+// Custom hooks
+import { useModalController } from './components/Modal/useModalController';
 
 // >>>>>>>>>>
 // Cookies section
@@ -45,30 +51,44 @@ function App() {
     'Travel',
   ]);
 
+  const { isModalOpen, openModal, closeModal } = useModalController();
+
   const onGroupConnect = (groupName) => {
     setSelectedGroup(() => groupName);
   };
 
-  const logUser = (userData) => {
-    setUser(userData);
+  const logUserIn = async (userData) => {
+    hubConn.createConnection(userData);
+    await hubConn.connect();
+    hubConn.connection.invoke('RegisterUser', userData);
+    registrationConn(setUser);
+    closeModal();
   };
+
+  useEffect(() => {
+    if (!user) openModal();
+  }, [user, openModal]);
 
   if (!user) {
     return (
       <div>
-        hello there
-        <button
+        <Modal
+          showModal={isModalOpen}
+          handleClose={closeModal}
+          logUserIn={logUserIn}
+        />
+        {/* <button
           className="bg-[red]"
           onClick={async () => {
             hubConn.createConnection('Peter');
             await hubConn.connect();
             hubConn.connection.invoke('RegisterUser', 'Peter');
-            registrationConn(logUser);
+            registrationConn(logUserIn);
           }}
         >
           Register
         </button>
-        <input type="text" />
+        <input type="text" /> */}
       </div>
     );
   }
