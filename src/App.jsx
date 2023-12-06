@@ -55,7 +55,7 @@ function App() {
   const { isModalOpen, openModal, closeModal } = useModalController();
 
   const onGroupConnect = (group) => {
-    setSelectedGroup(() => group.name);
+    setSelectedGroup(() => group);
   };
 
   const logUserIn = async (userData) => {
@@ -98,12 +98,19 @@ function App() {
           selectedGroup,
           groupsList,
           onGroupConnect,
+          user,
         })}
       />
     );
 }
 
-function router({ onlineUsers, selectedGroup, groupsList, onGroupConnect }) {
+function router({
+  onlineUsers,
+  selectedGroup,
+  groupsList,
+  onGroupConnect,
+  user,
+}) {
   return createBrowserRouter([
     {
       path: '/',
@@ -122,7 +129,11 @@ function router({ onlineUsers, selectedGroup, groupsList, onGroupConnect }) {
         {
           path: '/chat',
           element: (
-            <ChatPage selectedGroup={selectedGroup} onlineUsers={onlineUsers} />
+            <ChatPage
+              selectedGroup={selectedGroup}
+              onlineUsers={onlineUsers}
+              user={user}
+            />
           ),
         },
         {

@@ -1,12 +1,28 @@
+import { useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
+import { groupHub } from '../../hub/groupsHubConfig';
 
-function ChatPage({ onlineUsers, selectedGroup }) {
+function ChatPage({ onlineUsers, selectedGroup, user }) {
+  useEffect(() => {
+    if (selectedGroup && user) {
+      const hubConnection = async () => {
+        groupHub.createConnection(user.nickname, selectedGroup.name);
+        await groupHub.connect();
+        groupHub.connection.invoke('ConnectUserToGroup');
+        groupHub.connection.on('OnUserConnectionToGroup', (message) => {
+          console.log(message);
+        });
+      };
+      hubConnection();
+    }
+  }, []);
+
   return !selectedGroup ? (
     <Navigate to="/" replace={true} />
   ) : (
     <div className="flex bg-[red] ">
       <div className="w-10/12">
-        <div className="p-2">{selectedGroup}</div>
+        <div className="p-2">{selectedGroup.name}</div>
         <div className="h-[80vh] bg-[green] relative pb-10">
           <div className="p-2 h-full overflow-y-scroll">
             <div>Chating... </div>

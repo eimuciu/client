@@ -1,10 +1,16 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 function GroupsPage({ groupsList, onGroupConnect, selectedGroup }) {
   const [selected, setSelected] = useState(selectedGroup);
-
   const navigate = useNavigate();
+  const prevSelection = useRef(null);
+
+  useEffect(() => {
+    if (selected) {
+      prevSelection.current = selected;
+    }
+  }, []);
 
   return (
     <div className="flex justify-start flex-col items-center w-full h-[80vh]">
@@ -12,7 +18,7 @@ function GroupsPage({ groupsList, onGroupConnect, selectedGroup }) {
         {groupsList.map((group) => (
           <div
             className={`cursor-default p-2 w-[50%] flex justify-center ${
-              selected === group && ' bg-[grey]'
+              selected.name === group.name && ' bg-[grey]'
             }`}
             onClick={() => setSelected(group)}
             key={group.name}
