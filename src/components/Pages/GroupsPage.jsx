@@ -15,9 +15,9 @@ function GroupsPage({ groupsList, onGroupConnect, selectedGroup }) {
               selected === group && ' bg-[grey]'
             }`}
             onClick={() => setSelected(group)}
-            key={group}
+            key={group.name}
           >
-            {group}
+            {group.name}
           </div>
         ))}
       </div>

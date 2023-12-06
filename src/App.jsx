@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from 'react';
 // Styles
 import './style.css';
@@ -15,6 +16,8 @@ import Modal from './components/Modal/Modal';
 import { hubConn } from './hub/hubConfig';
 // Custom hooks
 import { useModalController } from './components/Modal/useModalController';
+// Api calls
+import { getGroupsList } from './api/apiCalls';
 
 // >>>>>>>>>>
 // Cookies section
@@ -32,6 +35,8 @@ function registrationConn(setUserFn) {
     console.log(message);
     if (!message.connected) {
       alert(message.message);
+      Cookies.remove(cookieName);
+      setUserFn('');
       return;
     }
     console.log('Successfull login');
@@ -45,17 +50,12 @@ function App() {
   const [user, setUser] = useState('');
   const [onlineUsers, setOnlineUsers] = useState(['peter', 'john', 'lamba']);
   const [selectedGroup, setSelectedGroup] = useState('');
-  const [groupsList, setGroupsList] = useState([
-    'Music',
-    'Movies',
-    'Programming',
-    'Travel',
-  ]);
+  const [groupsList, setGroupsList] = useState([]);
 
   const { isModalOpen, openModal, closeModal } = useModalController();
 
-  const onGroupConnect = (groupName) => {
-    setSelectedGroup(() => groupName);
+  const onGroupConnect = (group) => {
+    setSelectedGroup(() => group.name);
   };
 
   const logUserIn = async (userData) => {
@@ -64,6 +64,8 @@ function App() {
     hubConn.connection.invoke('RegisterUser', userData);
     registrationConn(setUser);
     closeModal();
+    const groupsData = await getGroupsList();
+    setGroupsList(groupsData);
   };
 
   useEffect(() => {
@@ -84,27 +86,9 @@ function App() {
           handleClose={closeModal}
           logUserIn={logUserIn}
         />
-        {/* <button
-          className="bg-[red]"
-          onClick={async () => {
-            hubConn.createConnection('Peter');
-            await hubConn.connect();
-            hubConn.connection.invoke('RegisterUser', 'Peter');
-            registrationConn(logUserIn);
-          }}
-        >
-          Register
-        </button>
-        <input type="text" /> */}
       </div>
     );
   }
-
-  // if (username) {
-  // console.log(username);
-  // Cookies.set(cookieName, username);
-  // setUser(username);
-  // }
 
   if (user)
     return (
