@@ -35,6 +35,7 @@ function registrationConn(setUserFn) {
       return;
     }
     console.log('Successfull login');
+    Cookies.set(cookieName, JSON.stringify(message.user));
     setUserFn(message.user);
   });
 }
@@ -66,8 +67,14 @@ function App() {
   };
 
   useEffect(() => {
-    if (!user) openModal();
-  }, [user, openModal]);
+    if (!getCookie() && !user) {
+      openModal();
+      return;
+    }
+    if (getCookie()) {
+      logUserIn(JSON.parse(getCookie()).nickname);
+    }
+  }, []);
 
   if (!user) {
     return (
