@@ -23,10 +23,21 @@ function ChatPage({ onlineUsers, selectedGroup, user, prevGroupSelection }) {
           setMessages(message.groupMessages);
           setUsersOnline(message.usersInGroup);
         });
+        groupHub.connection.on('NewMessage', (res) => {
+          console.log(res);
+        });
       };
       hubConnection();
     }
   }, []);
+
+  const sendGroupMessage = (msgString) => {
+    groupHub.connection.invoke(
+      'SendGroupMessage',
+      selectedGroup.name,
+      msgString,
+    );
+  };
 
   //   {
   //     "id": 1,
@@ -51,14 +62,23 @@ function ChatPage({ onlineUsers, selectedGroup, user, prevGroupSelection }) {
                 <b>
                   <i>
                     {new Date(msg.messageSent).toLocaleString()}{' '}
-                    <span className='text-[blue]'>{msg.senderNickname}</span>:
+                    <span className="text-[blue]">{msg.senderNickname}</span>:
                   </i>
                 </b>{' '}
                 {msg.content}
               </div>
             ))}
           </div>
-          <div className="bg-[yellow] absolute w-full bottom-0 p-2">Input</div>
+          {/* <div className="bg-[yellow] absolute w-full bottom-0 p-2">Input</div> */}
+          <div className="bg-[red] absolute w-full bottom-0 p-2">
+            <button
+              onClick={() => {
+                sendGroupMessage('I am new message');
+              }}
+            >
+              Send me
+            </button>
+          </div>
         </div>
       </div>
       <div className="w-2/12">
