@@ -7,6 +7,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 // Libraries
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Cookies from 'js-cookie';
+import { userCookieName, getCookie, groupCookieName } from './helpers/cookies';
 // Components
 import NavBar from './components/NavBar';
 import ChatPage from './components/Pages/ChatPage';
@@ -19,36 +20,23 @@ import { useModalController } from './components/Modal/useModalController';
 // Api calls
 import { getGroupsList } from './api/apiCalls';
 
-// >>>>>>>>>>
-// Cookies section
-const cookieName = 'kjsdnfkjsdnfkjskafldmnaflkasmdfkls';
-
-function getCookie() {
-  const cookie = Cookies.get(cookieName);
-
-  if (cookie) return cookie;
-  return '';
-}
-
 function registrationConn(setUserFn) {
   hubConn.connection.on('UserRegistration', (message) => {
     console.log(message);
     if (!message.connected) {
       alert(message.message);
-      Cookies.remove(cookieName);
+      Cookies.remove(userCookieName);
       setUserFn('');
       return;
     }
     console.log('Successfull login');
-    Cookies.set(cookieName, JSON.stringify(message.user));
+    Cookies.set(userCookieName, JSON.stringify(message.user));
     setUserFn(message.user);
   });
 }
 
 function App() {
-  // const [user, setUser] = useState(getCookie());
   const [user, setUser] = useState('');
-  const [onlineUsers, setOnlineUsers] = useState(['peter', 'john', 'lamba']);
   const [selectedGroup, setSelectedGroup] = useState('');
   const [groupsList, setGroupsList] = useState([]);
 
@@ -60,6 +48,7 @@ function App() {
     if (selectedGroup) {
       prevGroupSelection.current = selectedGroup;
     }
+    Cookies.set(groupCookieName, JSON.stringify(group));
     setSelectedGroup(() => group);
   };
 
@@ -74,12 +63,15 @@ function App() {
   };
 
   useEffect(() => {
-    if (!getCookie() && !user) {
+    if (!getCookie(userCookieName) && !user) {
       openModal();
       return;
     }
-    if (getCookie()) {
-      logUserIn(JSON.parse(getCookie()).nickname);
+    if (getCookie(userCookieName)) {
+      logUserIn(JSON.parse(getCookie(userCookieName)).nickname);
+    }
+    if (getCookie(groupCookieName)) {
+      setSelectedGroup(JSON.parse(getCookie(groupCookieName)));
     }
   }, []);
 
@@ -99,7 +91,6 @@ function App() {
     return (
       <RouterProvider
         router={router({
-          onlineUsers,
           selectedGroup,
           groupsList,
           onGroupConnect,
@@ -111,7 +102,6 @@ function App() {
 }
 
 function router({
-  onlineUsers,
   selectedGroup,
   groupsList,
   onGroupConnect,
@@ -138,7 +128,6 @@ function router({
           element: (
             <ChatPage
               selectedGroup={selectedGroup}
-              onlineUsers={onlineUsers}
               user={user}
               prevGroupSelection={prevGroupSelection}
             />

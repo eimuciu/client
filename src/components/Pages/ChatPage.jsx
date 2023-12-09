@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 import { groupHub } from '../../hub/groupsHubConfig';
 
-function ChatPage({ onlineUsers, selectedGroup, user, prevGroupSelection }) {
+function ChatPage({ selectedGroup, user, prevGroupSelection }) {
   const [messages, setMessages] = useState([]);
   const [usersOnline, setUsersOnline] = useState([]);
   const [msgInput, setMsgInput] = useState('');
@@ -78,12 +78,10 @@ function ChatPage({ onlineUsers, selectedGroup, user, prevGroupSelection }) {
           <div className="p-2 h-full overflow-y-scroll">
             {messages.map((msg) => (
               <div key={msg.id}>
-                <b>
-                  <i>
-                    {new Date(msg.messageSent).toLocaleString()}{' '}
-                    <span className="text-[blue]">{msg.senderNickname}</span>:
-                  </i>
-                </b>{' '}
+                <i>
+                  {new Date(msg.messageSent).toLocaleString()}{' '}
+                  <span className="text-[blue]">{msg.senderNickname}</span>:{' '}
+                </i>
                 {msg.content}
               </div>
             ))}
