@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 // Styles
 import './style.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -54,7 +54,12 @@ function App() {
 
   const { isModalOpen, openModal, closeModal } = useModalController();
 
+  const prevGroupSelection = useRef(null);
+
   const onGroupConnect = (group) => {
+    if (selectedGroup) {
+      prevGroupSelection.current = selectedGroup;
+    }
     setSelectedGroup(() => group);
   };
 
@@ -99,6 +104,7 @@ function App() {
           groupsList,
           onGroupConnect,
           user,
+          prevGroupSelection,
         })}
       />
     );
@@ -110,6 +116,7 @@ function router({
   groupsList,
   onGroupConnect,
   user,
+  prevGroupSelection,
 }) {
   return createBrowserRouter([
     {
@@ -133,6 +140,7 @@ function router({
               selectedGroup={selectedGroup}
               onlineUsers={onlineUsers}
               user={user}
+              prevGroupSelection={prevGroupSelection}
             />
           ),
         },

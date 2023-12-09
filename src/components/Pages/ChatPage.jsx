@@ -2,13 +2,19 @@ import { useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 import { groupHub } from '../../hub/groupsHubConfig';
 
-function ChatPage({ onlineUsers, selectedGroup, user }) {
+function ChatPage({ onlineUsers, selectedGroup, user, prevGroupSelection }) {
   useEffect(() => {
     if (selectedGroup && user) {
       const hubConnection = async () => {
         groupHub.createConnection(user.nickname, selectedGroup.name);
         await groupHub.connect();
-        groupHub.connection.invoke('ConnectUserToGroup');
+        console.log(prevGroupSelection.current);
+        groupHub.connection.invoke(
+          'ConnectUserToGroup',
+          user.nickname,
+          selectedGroup.name,
+          prevGroupSelection.current ? prevGroupSelection.current.name : '',
+        );
         groupHub.connection.on('OnUserConnectionToGroup', (message) => {
           console.log(message);
         });

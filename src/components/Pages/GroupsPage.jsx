@@ -1,16 +1,9 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 function GroupsPage({ groupsList, onGroupConnect, selectedGroup }) {
   const [selected, setSelected] = useState(selectedGroup);
   const navigate = useNavigate();
-  const prevSelection = useRef(null);
-
-  useEffect(() => {
-    if (selected) {
-      prevSelection.current = selected;
-    }
-  }, []);
 
   return (
     <div className="flex justify-start flex-col items-center w-full h-[80vh]">

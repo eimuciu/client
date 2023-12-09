@@ -10,9 +10,9 @@ class GroupHub {
     await this.connection.start().catch((err) => console.log(err));
   }
 
-  createConnection(nickname, groupname) {
+  createConnection() {
     this.connection = new signalR.HubConnectionBuilder()
-      .withUrl(`${apiURL}/groupHub?nick=${nickname}&groupname=${groupname}`)
+      .withUrl(`${apiURL}/groupHub`)
       .build();
   }
 }
