@@ -19,13 +19,24 @@ function ChatPage({ onlineUsers, selectedGroup, user, prevGroupSelection }) {
           prevGroupSelection.current ? prevGroupSelection.current.name : '',
         );
         groupHub.connection.on('OnUserConnectionToGroup', (message) => {
+          console.log(message);
           setMessages(message.groupMessages);
-          setUsersOnline(message.usersInGroup)
+          setUsersOnline(message.usersInGroup);
         });
       };
       hubConnection();
     }
   }, []);
+
+  //   {
+  //     "id": 1,
+  //     "content": "My message",
+  //     "senderId": 1,
+  //     "senderNickname": "Peter",
+  //     "groupId": 1,
+  //     "groupName": "Music",
+  //     "messageSent": "2023-12-06T14:33:20.5490206"
+  // }
 
   return !selectedGroup ? (
     <Navigate to="/" replace={true} />
@@ -36,7 +47,15 @@ function ChatPage({ onlineUsers, selectedGroup, user, prevGroupSelection }) {
         <div className="h-[80vh] bg-[green] relative pb-10">
           <div className="p-2 h-full overflow-y-scroll">
             {messages.map((msg) => (
-              <div key={msg.id}>{msg.content} </div>
+              <div key={msg.id}>
+                <b>
+                  <i>
+                    {new Date(msg.messageSent).toLocaleString()}{' '}
+                    <span className='text-[blue]'>{msg.senderNickname}</span>:
+                  </i>
+                </b>{' '}
+                {msg.content}
+              </div>
             ))}
           </div>
           <div className="bg-[yellow] absolute w-full bottom-0 p-2">Input</div>
