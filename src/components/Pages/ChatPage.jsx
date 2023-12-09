@@ -5,6 +5,7 @@ import { groupHub } from '../../hub/groupsHubConfig';
 function ChatPage({ onlineUsers, selectedGroup, user, prevGroupSelection }) {
   const [messages, setMessages] = useState([]);
   const [usersOnline, setUsersOnline] = useState([]);
+  const [msgInput, setMsgInput] = useState('');
 
   useEffect(() => {
     if (selectedGroup && user) {
@@ -24,20 +25,38 @@ function ChatPage({ onlineUsers, selectedGroup, user, prevGroupSelection }) {
           setUsersOnline(message.usersInGroup);
         });
         groupHub.connection.on('NewMessage', (res) => {
-          console.log(res);
+          setMessages((prev) => [...prev, res]);
         });
       };
       hubConnection();
     }
   }, []);
 
-  const sendGroupMessage = (msgString) => {
-    groupHub.connection.invoke(
-      'SendGroupMessage',
-      selectedGroup.name,
-      msgString,
-    );
+  const sendGroupMessage = () => {
+    if (msgInput) {
+      const msg = {
+        content: msgInput,
+        senderId: user.id,
+        senderNickname: user.nickname,
+        groupId: selectedGroup.id,
+        groupName: selectedGroup.name,
+      };
+
+      groupHub.connection.invoke('SendGroupMessage', msg);
+
+      setMsgInput('');
+    }
   };
+
+  const inputChangeHandler = (e) => {
+    setMsgInput(e.target.value);
+  };
+
+  // public string Content { get; set; }
+  // public int SenderId { get; set; }
+  // public string SenderNickname { get; set; }
+  // public int GroupId { get; set; }
+  // public string GroupName { get; set; }
 
   //   {
   //     "id": 1,
@@ -69,9 +88,16 @@ function ChatPage({ onlineUsers, selectedGroup, user, prevGroupSelection }) {
               </div>
             ))}
           </div>
-          {/* <div className="bg-[yellow] absolute w-full bottom-0 p-2">Input</div> */}
-          <div className="bg-[red] absolute w-full bottom-0 p-2">
+          <div className="flex bg-[yellow] absolute w-full bottom-0 p-2">
+            <input
+              className="w-[85%] p-2"
+              placeholder="message..."
+              type="text"
+              value={msgInput}
+              onChange={inputChangeHandler}
+            />
             <button
+              className="w-[15%] bg-[grey] p-2"
               onClick={() => {
                 sendGroupMessage('I am new message');
               }}
