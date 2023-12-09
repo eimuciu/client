@@ -1,8 +1,11 @@
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 import { groupHub } from '../../hub/groupsHubConfig';
 
 function ChatPage({ onlineUsers, selectedGroup, user, prevGroupSelection }) {
+  const [messages, setMessages] = useState([]);
+  const [usersOnline, setUsersOnline] = useState([]);
+
   useEffect(() => {
     if (selectedGroup && user) {
       const hubConnection = async () => {
@@ -16,7 +19,8 @@ function ChatPage({ onlineUsers, selectedGroup, user, prevGroupSelection }) {
           prevGroupSelection.current ? prevGroupSelection.current.name : '',
         );
         groupHub.connection.on('OnUserConnectionToGroup', (message) => {
-          console.log(message);
+          setMessages(message.groupMessages);
+          setUsersOnline(message.usersInGroup)
         });
       };
       hubConnection();
@@ -31,53 +35,9 @@ function ChatPage({ onlineUsers, selectedGroup, user, prevGroupSelection }) {
         <div className="p-2">{selectedGroup.name}</div>
         <div className="h-[80vh] bg-[green] relative pb-10">
           <div className="p-2 h-full overflow-y-scroll">
-            <div>Chating... </div>
-            <div>Chating... </div>
-            <div>Chating... </div>
-            <div>Chating... </div>
-            <div>Chating... </div>
-            <div>Chating... </div>
-            <div>Chating... </div>
-            <div>Chating... </div>
-            <div>Chating... </div>
-            <div>Chating... </div>
-            <div>Chating... </div>
-            <div>Chating... </div>
-            <div>Chating... </div>
-            <div>Chating... </div>
-            <div>Chating... </div>
-            <div>Chating... </div>
-            <div>Chating... </div>
-            <div>Chating... </div>
-            <div>Chating... </div>
-            <div>Chating... </div>
-            <div>Chating... </div>
-            <div>Chating... </div>
-            <div>Chating... </div>
-            <div>Chating... </div>
-            <div>Chating... </div>
-            <div>Chating... </div>
-            <div>Chating... </div>
-            <div>Chating... </div>
-            <div>Chating... </div>
-            <div>Chating... </div>
-            <div>Chating... </div>
-            <div>Chating... </div>
-            <div>Chating... </div>
-            <div>Chating... </div>
-            <div>Chating... </div>
-            <div>Chating... </div>
-            <div>Chating... </div>
-            <div>Chating... </div>
-            <div>Chating... </div>
-            <div>Chating... </div>
-            <div>Chating... </div>
-            <div>Chating... </div>
-            <div>Chating... </div>
-            <div>Chating... </div>
-            <div>Chating... </div>
-            <div>Chating... </div>
-            <div>Chating... </div>
+            {messages.map((msg) => (
+              <div key={msg.id}>{msg.content} </div>
+            ))}
           </div>
           <div className="bg-[yellow] absolute w-full bottom-0 p-2">Input</div>
         </div>
@@ -86,7 +46,7 @@ function ChatPage({ onlineUsers, selectedGroup, user, prevGroupSelection }) {
         <div className="p-2">Online</div>
         <div className="h-[80vh] bg-[brown]">
           <div className="p-2 h-full overflow-y-scroll">
-            {onlineUsers.map((user) => (
+            {usersOnline.map((user) => (
               <div key={user}>{user}</div>
             ))}
           </div>
