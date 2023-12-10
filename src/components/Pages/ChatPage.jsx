@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Navigate } from 'react-router-dom';
 import { groupHub } from '../../hub/groupsHubConfig';
 
@@ -6,38 +6,39 @@ function ChatPage({ selectedGroup, user, prevGroupSelection }) {
   const [messages, setMessages] = useState([]);
   const [usersOnline, setUsersOnline] = useState([]);
   const [msgInput, setMsgInput] = useState('');
-  const [whoJoined, setWhoJoined] = useState([]);
+  // const [whoJoined, setWhoJoined] = useState([]);
 
   useEffect(() => {
     if (selectedGroup && user) {
       const hubConnection = async () => {
         groupHub.createConnection(user.nickname, selectedGroup.name);
         await groupHub.connect();
+        groupHub.connection.on('OnUserConnectionToGroup', (message) => {
+          setMessages(message.groupMessages);
+          setUsersOnline(message.usersInGroup);
+        });
         groupHub.connection.invoke(
           'ConnectUserToGroup',
           user.nickname,
           selectedGroup.name,
           prevGroupSelection.current ? prevGroupSelection.current.name : '',
         );
-        groupHub.connection.on('OnUserConnectionToGroup', (message) => {
-          setMessages(message.groupMessages);
-          setUsersOnline(message.usersInGroup);
-        });
-        groupHub.connection.on('NewMessage', (res) => {
-          setMessages((prev) => [...prev, res]);
-        });
       };
 
       hubConnection();
     }
-  }, []);
+  }, [selectedGroup]);
 
   useEffect(() => {
-    if (messages.length && usersOnline.length) {
+    if (messages.length || usersOnline.length) {
       groupHub.connection.on('OnUserJoinGroup', (userObj) => {
         const updatedUsers = [...usersOnline, userObj.nickname];
         setUsersOnline([...new Set(updatedUsers)]);
         // setMessages((prev) => [...prev, { joined: userObj.nickname }]);
+      });
+
+      groupHub.connection.on('NewMessage', (res) => {
+        setMessages((prev) => [...prev, res]);
       });
 
       groupHub.connection.on('OnUserDisconnecting', (userNickName) => {
@@ -45,8 +46,35 @@ function ChatPage({ selectedGroup, user, prevGroupSelection }) {
         const filteredUsers = usersOnline.filter((x) => x !== userNickName);
         setUsersOnline(filteredUsers);
       });
+
+      groupHub.connection.on('OnUserChangingGroup', (usersArr) => {
+        console.log('USERS ARR AFTER CHANGING', usersArr);
+        setUsersOnline(usersArr);
+      });
+
+      if (
+        selectedGroup &&
+        prevGroupSelection.current &&
+        selectedGroup.name !== prevGroupSelection.current.name
+      ) {
+        groupHub.connection.invoke(
+          'ChangeUserGroup',
+          prevGroupSelection.current.name,
+        );
+      }
     }
-  }, [messages]);
+  }, [messages, usersOnline]);
+
+  // useEffect(() => {
+  //   if (
+  //     selectedGroup &&
+  //     prevGroupSelection.current &&
+  //     selectedGroup.name !== prevGroupSelection.current.name
+  //   ) {
+  //     console.log('Changing group');
+  //     groupHub.connection.invoke('ChangeUserGroup', prevGroupSelection.name);
+  //   }
+  // }, [selectedGroup]);
 
   const sendGroupMessage = () => {
     if (msgInput) {
