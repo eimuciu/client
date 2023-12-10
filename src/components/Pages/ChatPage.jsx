@@ -6,13 +6,13 @@ function ChatPage({ selectedGroup, user, prevGroupSelection }) {
   const [messages, setMessages] = useState([]);
   const [usersOnline, setUsersOnline] = useState([]);
   const [msgInput, setMsgInput] = useState('');
+  const [whoJoined, setWhoJoined] = useState([]);
 
   useEffect(() => {
     if (selectedGroup && user) {
       const hubConnection = async () => {
         groupHub.createConnection(user.nickname, selectedGroup.name);
         await groupHub.connect();
-        console.log(prevGroupSelection.current);
         groupHub.connection.invoke(
           'ConnectUserToGroup',
           user.nickname,
@@ -20,7 +20,6 @@ function ChatPage({ selectedGroup, user, prevGroupSelection }) {
           prevGroupSelection.current ? prevGroupSelection.current.name : '',
         );
         groupHub.connection.on('OnUserConnectionToGroup', (message) => {
-          console.log(message);
           setMessages(message.groupMessages);
           setUsersOnline(message.usersInGroup);
         });
@@ -28,9 +27,26 @@ function ChatPage({ selectedGroup, user, prevGroupSelection }) {
           setMessages((prev) => [...prev, res]);
         });
       };
+
       hubConnection();
     }
   }, []);
+
+  useEffect(() => {
+    if (messages.length && usersOnline.length) {
+      groupHub.connection.on('OnUserJoinGroup', (userObj) => {
+        const updatedUsers = [...usersOnline, userObj.nickname];
+        setUsersOnline([...new Set(updatedUsers)]);
+        // setMessages((prev) => [...prev, { joined: userObj.nickname }]);
+      });
+
+      groupHub.connection.on('OnUserDisconnecting', (userNickName) => {
+        console.log('Disconnecting');
+        const filteredUsers = usersOnline.filter((x) => x !== userNickName);
+        setUsersOnline(filteredUsers);
+      });
+    }
+  }, [messages]);
 
   const sendGroupMessage = () => {
     if (msgInput) {
@@ -76,15 +92,34 @@ function ChatPage({ selectedGroup, user, prevGroupSelection }) {
         <div className="p-2">{selectedGroup.name}</div>
         <div className="h-[80vh] bg-[green] relative pb-10">
           <div className="p-2 h-full overflow-y-scroll">
-            {messages.map((msg) => (
-              <div key={msg.id}>
-                <i>
-                  {new Date(msg.messageSent).toLocaleString()}{' '}
-                  <span className="text-[blue]">{msg.senderNickname}</span>:{' '}
-                </i>
-                {msg.content}
-              </div>
-            ))}
+            {messages.map((msg) => {
+              {
+                if (msg.content) {
+                  return (
+                    <div key={msg.id}>
+                      <i>
+                        {new Date(msg.messageSent).toLocaleString()}{' '}
+                        <span className="text-[blue]">
+                          {msg.senderNickname}
+                        </span>
+                        :{' '}
+                      </i>
+                      {msg.content}
+                    </div>
+                  );
+                }
+                if (msg.joined) {
+                  return (
+                    <div key={msg.joined}>
+                      <i>
+                        <span className="text-[blue]">{msg.joined}</span>
+                      </i>{' '}
+                      joined
+                    </div>
+                  );
+                }
+              }
+            })}
           </div>
           <div className="flex bg-[yellow] absolute w-full bottom-0 p-2">
             <input
@@ -100,7 +135,7 @@ function ChatPage({ selectedGroup, user, prevGroupSelection }) {
                 sendGroupMessage('I am new message');
               }}
             >
-              Send me
+              Send
             </button>
           </div>
         </div>
