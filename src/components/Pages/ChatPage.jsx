@@ -129,7 +129,7 @@ function ChatPage({ selectedGroup, user, prevGroupSelection }) {
                   return (
                     <div key={msg.id}>
                       <i>
-                        {new Date(msg.messageSent).toLocaleString()}{' '}
+                        {new Date(msg.messageSent + 'Z').toLocaleString()}{' '}
                         <span className="text-[blue]">
                           {msg.senderNickname}
                         </span>
