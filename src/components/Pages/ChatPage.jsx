@@ -65,12 +65,8 @@ function ChatPage({ selectedGroup, user, prevGroupSelection }) {
           prevGroupSelection.current.name,
         );
       }
-
       if (msgBoxRef.current) {
         msgBoxRef.current.scrollTop = msgBoxRef.current.scrollHeight;
-
-        // msgBoxRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
-        // console.log(msgBoxRef.current);
       }
     }
   }, [messages, usersOnline]);
