@@ -118,7 +118,9 @@ function ChatPage({ selectedGroup, user, prevGroupSelection }) {
   ) : (
     <div className="flex h-[75vh]">
       <div className="w-10/12">
-        <div className="p-2 bg-[#20BF55]">{selectedGroup.name}</div>
+        <div className="p-2 bg-[#20BF55]">
+          <b>{selectedGroup.name}:</b> <i>{selectedGroup.description}</i>
+        </div>
         <div className="h-[75vh] relative pb-20">
           <div className="p-2 h-full overflow-y-scroll">
             {messages.map((msg) => {
@@ -155,7 +157,7 @@ function ChatPage({ selectedGroup, user, prevGroupSelection }) {
             style={{ borderBottom: '1px solid #CCCCCC' }}
           >
             <input
-              className="w-[85%] p-2 bg-[#CCCCCC]  outline-0 text-[black] placeholder:text-[black]"
+              className="w-[85%] p-2 bg-[#f8f8f8]  outline-0 text-[black] placeholder:text-[black]"
               placeholder="Send a message"
               type="text"
               value={msgInput}
@@ -178,7 +180,9 @@ function ChatPage({ selectedGroup, user, prevGroupSelection }) {
         </div>
       </div>
       <div className="w-2/12">
-        <div className="p-2 bg-[#20BF55]">Online</div>
+        <div className="p-2 bg-[#20BF55]">
+          <b>Online</b>
+        </div>
         <div className="h-[75vh]">
           <div
             className="p-2 h-full overflow-y-scroll pb-3"
