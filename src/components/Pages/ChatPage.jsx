@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Navigate } from 'react-router-dom';
 import { groupHub } from '../../hub/groupsHubConfig';
 
@@ -8,6 +8,8 @@ function ChatPage({ selectedGroup, user, prevGroupSelection }) {
   const [usersOnline, setUsersOnline] = useState([]);
   const [msgInput, setMsgInput] = useState('');
   // const [whoJoined, setWhoJoined] = useState([]);
+
+  const msgBoxRef = useRef(null);
 
   useEffect(() => {
     if (selectedGroup && user) {
@@ -63,6 +65,13 @@ function ChatPage({ selectedGroup, user, prevGroupSelection }) {
           prevGroupSelection.current.name,
         );
       }
+
+      if (msgBoxRef.current) {
+        msgBoxRef.current.scrollTop = msgBoxRef.current.scrollHeight;
+
+        // msgBoxRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
+        // console.log(msgBoxRef.current);
+      }
     }
   }, [messages, usersOnline]);
 
@@ -116,13 +125,18 @@ function ChatPage({ selectedGroup, user, prevGroupSelection }) {
   return !selectedGroup ? (
     <Navigate to="/" replace={true} />
   ) : (
-    <div className="flex h-[75vh]">
-      <div className="w-10/12">
-        <div className="p-2 bg-[#20BF55]">
+    <div className="flex flex-col h-[75vh]">
+      <div className="flex flex-row w-[100%]">
+        <div className="w-10/12 p-2 bg-[#20BF55] ">
           <b>{selectedGroup.name}:</b> <i>{selectedGroup.description}</i>
         </div>
-        <div className="h-[75vh] relative pb-20">
-          <div className="p-2 h-full overflow-y-scroll">
+        <div className="w-2/12 p-2 bg-[#20BF55] flex items-center">
+          <b>Online</b>
+        </div>
+      </div>
+      <div className="w-[100%] flex flex-row">
+        <div className="w-10/12 h-[75vh] relative pb-20">
+          <div ref={msgBoxRef} className="p-2 h-full overflow-y-scroll">
             {messages.map((msg) => {
               {
                 if (msg.content) {
@@ -130,10 +144,12 @@ function ChatPage({ selectedGroup, user, prevGroupSelection }) {
                     <div key={msg.id}>
                       <i>
                         {msg.messageSent[msg.messageSent.length - 1] === 'Z'
-                          ? new Date(msg.messageSent).toLocaleString()
-                          : new Date(
-                              msg.messageSent + 'Z',
-                            ).toLocaleString()}{' '}
+                          ? new Date(msg.messageSent)
+                              .toLocaleString()
+                              .toLocaleLowerCase()
+                          : new Date(msg.messageSent + 'Z')
+                              .toLocaleString()
+                              .toLocaleLowerCase()}{' '}
                         <span className="text-[blue]">
                           {msg.senderNickname}
                         </span>
@@ -182,19 +198,16 @@ function ChatPage({ selectedGroup, user, prevGroupSelection }) {
             </button>
           </div>
         </div>
-      </div>
-      <div className="w-2/12">
-        <div className="p-2 bg-[#20BF55]">
-          <b>Online</b>
-        </div>
-        <div className="h-[75vh]">
-          <div
-            className="p-2 h-full overflow-y-scroll pb-3"
-            style={{ borderBottom: '1px solid #CCCCCC' }}
-          >
-            {usersOnline.map((user) => (
-              <div key={user}>{user}</div>
-            ))}
+        <div className="w-2/12">
+          <div className="h-[75vh]">
+            <div
+              className="p-2 h-full overflow-y-scroll pb-3"
+              style={{ borderBottom: '1px solid #CCCCCC' }}
+            >
+              {usersOnline.map((user) => (
+                <div key={user}>{user}</div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
