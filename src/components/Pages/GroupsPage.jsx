@@ -11,7 +11,7 @@ function GroupsPage({ groupsList, onGroupConnect, selectedGroup }) {
         {groupsList.map((group) => (
           <div
             className={`cursor-default p-2 w-[50%] flex justify-center ${
-              selected.name === group.name && ' bg-[#048A81]'
+              selected.name === group.name && ' bg-[#8D99AE]'
             }`}
             onClick={() => setSelected(group)}
             key={group.name}
