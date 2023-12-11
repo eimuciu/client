@@ -22,14 +22,12 @@ import { getGroupsList } from './api/apiCalls';
 
 function registrationConn(setUserFn) {
   hubConn.connection.on('UserRegistration', (message) => {
-    console.log(message);
     if (!message.connected) {
       alert(message.message);
       Cookies.remove(userCookieName);
       setUserFn('');
       return;
     }
-    console.log('Successfull login');
     Cookies.set(userCookieName, JSON.stringify(message.user));
     setUserFn(message.user);
   });

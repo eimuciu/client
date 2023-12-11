@@ -45,13 +45,11 @@ function ChatPage({ selectedGroup, user, prevGroupSelection }) {
       });
 
       groupHub.connection.on('OnUserDisconnecting', (userNickName) => {
-        console.log('Disconnecting');
         const filteredUsers = usersOnline.filter((x) => x !== userNickName);
         setUsersOnline(filteredUsers);
       });
 
       groupHub.connection.on('OnUserChangingGroup', (usersArr) => {
-        console.log('USERS ARR AFTER CHANGING', usersArr);
         setUsersOnline(usersArr);
       });
 
