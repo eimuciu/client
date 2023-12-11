@@ -23,7 +23,7 @@ function NavBar({ selectedGroup }) {
         <NavLinkItem to="/">Groups</NavLinkItem>
         <NavLinkItem to="/create">Create</NavLinkItem>
       </div>
-      <div className="sm:w-11/12 md:w-9/12 mx-auto my-10">
+      <div className="sm:w-11/12 md:w-9/12 mx-auto mt-[25px]">
         <Outlet />
       </div>
     </>

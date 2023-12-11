@@ -11,7 +11,7 @@ function GroupsPage({ groupsList, onGroupConnect, selectedGroup }) {
         {groupsList.map((group) => (
           <div
             className={`cursor-default p-2 w-[50%] flex justify-center ${
-              selected.name === group.name && ' bg-[grey]'
+              selected.name === group.name && ' bg-[#048A81]'
             }`}
             onClick={() => setSelected(group)}
             key={group.name}
@@ -25,7 +25,7 @@ function GroupsPage({ groupsList, onGroupConnect, selectedGroup }) {
           if (selected) onGroupConnect(selected);
           navigate('/chat');
         }}
-        className="p-2 w-full mt-2 bg-[lightgrey] mt-auto"
+        className="p-2 w-full mt-2 bg-[#CCCCCC] mt-auto"
       >
         Connect
       </button>

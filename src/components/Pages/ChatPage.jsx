@@ -1,4 +1,5 @@
-import { useState, useEffect, useRef } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useState, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 import { groupHub } from '../../hub/groupsHubConfig';
 
@@ -115,10 +116,10 @@ function ChatPage({ selectedGroup, user, prevGroupSelection }) {
   return !selectedGroup ? (
     <Navigate to="/" replace={true} />
   ) : (
-    <div className="flex bg-[red] ">
+    <div className="flex h-[75vh]">
       <div className="w-10/12">
-        <div className="p-2">{selectedGroup.name}</div>
-        <div className="h-[80vh] bg-[green] relative pb-10">
+        <div className="p-2 bg-[#7F7EFF]">{selectedGroup.name}</div>
+        <div className="h-[75vh] relative pb-20">
           <div className="p-2 h-full overflow-y-scroll">
             {messages.map((msg) => {
               {
@@ -149,18 +150,18 @@ function ChatPage({ selectedGroup, user, prevGroupSelection }) {
               }
             })}
           </div>
-          <div className="flex bg-[yellow] absolute w-full bottom-0 p-2">
+          <div className="flex gap-2 absolute w-full bottom-0 p-2">
             <input
-              className="w-[85%] p-2"
-              placeholder="message..."
+              className="w-[85%] p-2 bg-[#8D5A97] text-[white] outline-0 placeholder:text-[white]"
+              placeholder="text..."
               type="text"
               value={msgInput}
               onChange={inputChangeHandler}
             />
             <button
-              className="w-[15%] bg-[grey] p-2"
+              className="w-[15%] bg-[#CCCCCC] p-2"
               onClick={() => {
-                sendGroupMessage('I am new message');
+                sendGroupMessage();
               }}
             >
               Send
@@ -169,8 +170,8 @@ function ChatPage({ selectedGroup, user, prevGroupSelection }) {
         </div>
       </div>
       <div className="w-2/12">
-        <div className="p-2">Online</div>
-        <div className="h-[80vh] bg-[brown]">
+        <div className="p-2 bg-[#7F7EFF]">Online</div>
+        <div className="h-[75vh]">
           <div className="p-2 h-full overflow-y-scroll">
             {usersOnline.map((user) => (
               <div key={user}>{user}</div>
