@@ -26,6 +26,9 @@ function ChatPage({ selectedGroup, user, prevGroupSelection }) {
           selectedGroup.name,
           prevGroupSelection.current ? prevGroupSelection.current.name : '',
         );
+        groupHub.connection.on('NewMessage', (res) => {
+          setMessages((prev) => [...prev, res]);
+        });
       };
 
       hubConnection();
@@ -38,10 +41,6 @@ function ChatPage({ selectedGroup, user, prevGroupSelection }) {
         const updatedUsers = [...usersOnline, userObj.nickname];
         setUsersOnline([...new Set(updatedUsers)]);
         // setMessages((prev) => [...prev, { joined: userObj.nickname }]);
-      });
-
-      groupHub.connection.on('NewMessage', (res) => {
-        setMessages((prev) => [...prev, res]);
       });
 
       groupHub.connection.on('OnUserDisconnecting', (userNickName) => {
