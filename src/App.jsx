@@ -13,6 +13,7 @@ import NavBar from './components/NavBar';
 import ChatPage from './components/Pages/ChatPage';
 import GroupsPage from './components/Pages/GroupsPage';
 import Modal from './components/Modal/Modal';
+import ErrorPage from './components/Pages/ErrorPage';
 // Hub
 import { hubConn } from './hub/hubConfig';
 // Custom hooks
@@ -141,11 +142,7 @@ function router({
         },
         {
           path: '*',
-          element: (
-            <div className="flex justify-center items-center	h-screen">
-              404 Error
-            </div>
-          ),
+          element: <ErrorPage />,
         },
       ],
     },
