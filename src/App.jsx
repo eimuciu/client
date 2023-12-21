@@ -14,6 +14,7 @@ import ChatPage from './components/Pages/ChatPage';
 import GroupsPage from './components/Pages/GroupsPage';
 import Modal from './components/Modal/Modal';
 import ErrorPage from './components/Pages/ErrorPage';
+import CreatePage from './components/Pages/CreatePage';
 // Hub
 import { hubConn } from './hub/hubConfig';
 // Custom hooks
@@ -134,11 +135,7 @@ function router({
         },
         {
           path: '/create',
-          element: (
-            <div className="flex justify-center h-[80vh] items-center">
-              Under construction
-            </div>
-          ),
+          element: <CreatePage />,
         },
         {
           path: '*',
