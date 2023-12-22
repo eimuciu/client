@@ -7,7 +7,6 @@ function ChatPage({ selectedGroup, user, prevGroupSelection }) {
   const [messages, setMessages] = useState([]);
   const [usersOnline, setUsersOnline] = useState([]);
   const [msgInput, setMsgInput] = useState('');
-  // const [whoJoined, setWhoJoined] = useState([]);
 
   const msgBoxRef = useRef(null);
 
