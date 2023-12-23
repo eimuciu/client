@@ -1,3 +1,19 @@
+// public string Content { get; set; }
+// public int SenderId { get; set; }
+// public string SenderNickname { get; set; }
+// public int GroupId { get; set; }
+// public string GroupName { get; set; }
+
+//   {
+//     "id": 1,
+//     "content": "My message",
+//     "senderId": 1,
+//     "senderNickname": "Peter",
+//     "groupId": 1,
+//     "groupName": "Music",
+//     "messageSent": "2023-12-06T14:33:20.5490206"
+// }
+
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect, useRef } from 'react';
 import { Navigate } from 'react-router-dom';
@@ -97,22 +113,6 @@ function ChatPage({ selectedGroup, user, prevGroupSelection }) {
   const inputChangeHandler = (e) => {
     setMsgInput(e.target.value);
   };
-
-  // public string Content { get; set; }
-  // public int SenderId { get; set; }
-  // public string SenderNickname { get; set; }
-  // public int GroupId { get; set; }
-  // public string GroupName { get; set; }
-
-  //   {
-  //     "id": 1,
-  //     "content": "My message",
-  //     "senderId": 1,
-  //     "senderNickname": "Peter",
-  //     "groupId": 1,
-  //     "groupName": "Music",
-  //     "messageSent": "2023-12-06T14:33:20.5490206"
-  // }
 
   return !selectedGroup ? (
     <Navigate to="/" replace={true} />
