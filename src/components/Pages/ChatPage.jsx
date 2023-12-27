@@ -55,7 +55,6 @@ function ChatPage({ selectedGroup, user, prevGroupSelection }) {
       groupHub.connection.on('OnUserJoinGroup', (userObj) => {
         const updatedUsers = [...usersOnline, userObj.nickname];
         setUsersOnline([...new Set(updatedUsers)]);
-        // setMessages((prev) => [...prev, { joined: userObj.nickname }]);
       });
 
       groupHub.connection.on('OnUserDisconnecting', (userNickName) => {
