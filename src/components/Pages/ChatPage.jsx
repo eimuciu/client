@@ -82,17 +82,6 @@ function ChatPage({ selectedGroup, user, prevGroupSelection }) {
     }
   }, [messages, usersOnline]);
 
-  // useEffect(() => {
-  //   if (
-  //     selectedGroup &&
-  //     prevGroupSelection.current &&
-  //     selectedGroup.name !== prevGroupSelection.current.name
-  //   ) {
-  //     console.log('Changing group');
-  //     groupHub.connection.invoke('ChangeUserGroup', prevGroupSelection.name);
-  //   }
-  // }, [selectedGroup]);
-
   const sendGroupMessage = () => {
     if (msgInput) {
       const msg = {
