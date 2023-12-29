@@ -22,6 +22,13 @@ function NavBar({ selectedGroup }) {
         {selectedGroup && <NavLinkItem to="/chat">Chat</NavLinkItem>}
         <NavLinkItem to="/">Groups</NavLinkItem>
         <NavLinkItem to="/create">Create</NavLinkItem>
+        <button
+          onClick={() => {
+            alert('Logout code needs to go here');
+          }}
+        >
+          Logout
+        </button>
       </div>
       <div className="sm:w-11/12 md:w-9/12 xs:w-11/12 mx-auto mt-[25px]">
         <Outlet />
