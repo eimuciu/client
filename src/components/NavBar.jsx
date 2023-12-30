@@ -1,3 +1,5 @@
+// Implement logout button feature
+
 import { NavLink, Outlet } from 'react-router-dom';
 
 const NavLinkItem = ({ children, ...rest }) => {
